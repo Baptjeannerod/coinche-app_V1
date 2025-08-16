@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Coinche Nights</title>
+  <meta name="description" content="Gestion tactile des soirées de Coinche – joueurs, sessions, appairages, scores, cagnotte et stats." />
+  <link rel="icon" href="./favicon.ico" sizes="any" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icons/icon-192.png" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo">🂮</div>
+      <h1>Coinche Nights</h1>
+    </div>
+    <div class="header-actions">
+      <div class="pot" aria-live="polite" aria-atomic="true">
+        <span class="pot-label">Cagnotte</span>
+        <span id="potBadge" class="badge">0 €</span>
+      </div>
+      <div class="theme">
+        <label for="themeSelect" class="sr-only">Thème</label>
+        <select id="themeSelect" title="Thème">
+          <option value="auto">Auto</option>
+          <option value="light">Clair</option>
+          <option value="dark">Sombre</option>
+        </select>
+      </div>
+      <button id="installBtn" class="btn outline" aria-label="Installer l’app" hidden>Installer</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- SECTION: Joueurs -->
+    <section class="card" aria-labelledby="playersTitle">
+      <div class="card-head">
+        <h2 id="playersTitle">Joueurs</h2>
+        <div class="card-actions">
+          <button id="resetPlayersBtn" class="btn danger outline">Réinitialiser</button>
+        </div>
+      </div>
+      <div class="grid grid-players">
+        <div class="field-row">
+          <label for="playerName" class="field-label">Prénom (unique)</label>
+          <input id="playerName" type="text" inputmode="text" autocomplete="off" placeholder="ex. Alexandre" />
+          <button id="addPlayerBtn" class="btn primary">Ajouter</button>
+        </div>
+        <p class="hint">Astuce iPad : touchez <em>Terminé</em> pour fermer le clavier.</p>
+      </div>
+      <ul id="playersList" class="list players"></ul>
+    </section>
+
+    <!-- SECTION: Nouvelle session -->
+    <section class="card" aria-labelledby="sessionTitle">
+      <div class="card-head">
+        <h2 id="sessionTitle">Nouvelle session</h2>
+        <div class="card-actions">
+          <button id="createSessionBtn" class="btn primary">Créer</button>
+          <button id="exportCsvBtn" class="btn outline">Exporter CSV</button>
+        </div>
+      </div>
+      <div class="grid grid-session">
+        <div class="field">
+          <label for="sessionDate">Date</label>
+          <input id="sessionDate" type="date" />
+        </div>
+      </div>
+      <div>
+        <h3>Présences</h3>
+        <div id="attendanceGrid" class="chip-grid" role="group" aria-label="Présences"></div>
+      </div>
+      <div id="sessionsHistory" class="sessions-history"></div>
+    </section>
+
+    <!-- SECTION: Rounds & tables -->
+    <section class="card" aria-labelledby="roundsTitle">
+      <div class="card-head">
+        <h2 id="roundsTitle">Rounds &amp; tables</h2>
+        <div class="card-actions">
+          <button id="createRoundBtn" class="btn primary">Créer un round</button>
+          <button id="undoRoundBtn" class="btn outline">Annuler dernier round</button>
+        </div>
+      </div>
+      <div id="waitlistInfo" class="waitlist" hidden></div>
+      <div id="roundsList" class="rounds-list"></div>
+    </section>
+
+    <!-- SECTION: Statistiques -->
+    <section class="card" aria-labelledby="statsTitle">
+      <div class="card-head">
+        <h2 id="statsTitle">Statistiques</h2>
+        <div class="card-actions">
+          <button id="recalcStatsBtn" class="btn">Recalculer</button>
+          <button id="exportJsonBtn" class="btn outline">Exporter JSON</button>
+          <label class="btn outline file">
+            Import JSON
+            <input id="importJsonInput" type="file" accept="application/json" />
+          </label>
+        </div>
+      </div>
+
+      <div class="grid grid-stats-controls">
+        <div class="field num">
+          <label for="euroPerLoss">€ par perdant/partie</label>
+          <input id="euroPerLoss" type="number" inputmode="numeric" pattern="[0-9]*" min="0" step="1" />
+        </div>
+        <div class="field">
+          <label for="rankingSort">Tri classement</label>
+          <select id="rankingSort">
+            <option value="wins">Victoires ↓</option>
+            <option value="rate">%</option>
+            <option value="name">Nom A→Z</option>
+            <option value="euros">€ dus ↑</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table id="statsTable" class="table">
+          <thead>
+            <tr>
+              <th>Joueur</th>
+              <th>Présences</th>
+              <th>Parties</th>
+              <th>Gagnées</th>
+              <th>Perdues</th>
+              <th>% Réussite</th>
+              <th>€ dus</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="advancedStats" class="advanced-stats"></div>
+    </section>
+
+    <!-- SECTION: Maintenance -->
+    <section class="card" aria-labelledby="maintTitle">
+      <div class="card-head">
+        <h2 id="maintTitle">Maintenance</h2>
+      </div>
+      <div class="grid grid-maint">
+        <button id="forceRerenderBtn" class="btn">Recalculer &amp; rafraîchir</button>
+        <button id="clearPwaCacheBtn" class="btn outline">Vider cache PWA</button>
+        <button id="resetDataBtn" class="btn danger">Reset données</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="./script.js"></script>
+  <script>
+    // Enregistrement SW
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(()=>{});
+      });
+    }
+  </script>
+</body>
+</html>
